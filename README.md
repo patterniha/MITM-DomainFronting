@@ -84,6 +84,7 @@ mycert.crt, mycert.key
 یا اینکه به طور مثال میتوانید به طور مستقیم از سایت
 
 https://regery.com/en/security/ssl-tools/self-signed-certificate-generator
+
 با یک نام دلخواه سرتیفیکیت بسازید و هر دو فایل crt و key را دانلود کنید
 در این صورت باید نام فایل crt را به mycert.crt و نام فایل key را به mycert.key تغییر دهید
 
