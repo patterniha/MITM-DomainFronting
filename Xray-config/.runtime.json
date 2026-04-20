@@ -76,8 +76,8 @@
           "certificates": [
             {
               "usage": "issue",
-              "certificateFile": "./mycert.crt",
-              "keyFile": "./mycert.key"
+              "certificateFile": "/Users/vonar/bin/MITM-DomainFronting/Xray-config/mycert.crt",
+              "keyFile": "/Users/vonar/bin/MITM-DomainFronting/Xray-config/mycert.key"
             }
           ]
         }
@@ -99,8 +99,8 @@
           "certificates": [
             {
               "usage": "issue",
-              "certificateFile": "./mycert.crt",
-              "keyFile": "./mycert.key"
+              "certificateFile": "/Users/vonar/bin/MITM-DomainFronting/Xray-config/mycert.crt",
+              "keyFile": "/Users/vonar/bin/MITM-DomainFronting/Xray-config/mycert.key"
             }
           ]
         }
