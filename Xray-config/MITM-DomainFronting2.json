@@ -1,0 +1,252 @@
+{
+  "__Credits__": {
+    "creator": "@patterniha",
+    "donate1": "USDT (BEP20): 0x76a768B53Ca77B43086946315f0BDF21156bF424",
+    "donate2": "USDT (TRC20): TU5gKvKqcXPn8itp1DouBCwcqGHMemBm8o"
+  },
+
+
+  "remarks": "MITM-DomainFronting_v1_second_ip",
+
+  "version": {
+    "min": "26.2.6"
+  },
+
+  "log": {
+    "loglevel": "warning", "dnsLog": false, "access": "none"
+  },
+
+  "policy": {
+    "levels": {
+      "0": {
+        "uplinkOnly": 0,
+        "downlinkOnly": 0
+      }
+    }
+  },
+
+  "dns":{
+    "hosts": {
+      "geosite:category-ads-all": "#3",
+      "google-main-services.redirect": "35.186.225.23"
+    },
+    "servers": [
+      "fakedns",
+    "localhost"
+    ],
+    "queryStrategy": "UseSystem",
+    "useSystemHosts": true,
+    "tag": "dns_inbound"
+  },
+
+  "inbounds": [
+    {
+      "tag": "mixed-in",
+      "port": 10808,
+      "protocol": "mixed",
+      "sniffing": {
+        "enabled": true,
+        "destOverride": ["fakedns", "tls"],
+        "routeOnly": false
+      },
+      "settings": {
+        "udp": true,
+        "ip": "127.0.0.1"
+      },
+      "streamSettings": {
+        "sockopt": {
+          "tcpKeepAliveInterval": 1,
+          "tcpKeepAliveIdle": 11
+        }
+      }
+    },
+  {
+      "port": 11666,
+      "tag": "tls-decrypt-h11",
+      "protocol": "dokodemo-door",
+      "settings": {
+        "network": "tcp",
+        "port": 443,
+        "followRedirect": true
+      },
+      "streamSettings": {
+        "security": "tls",
+        "tlsSettings": {
+          "alpn": ["http/1.1"],
+          "certificates": [
+            {
+              "usage": "issue",
+              "certificateFile": "mycert.crt",
+              "keyFile": "mycert.key"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "port": 11777,
+      "tag": "tls-decrypt-h211",
+      "protocol": "dokodemo-door",
+      "settings": {
+        "network": "tcp",
+        "port": 443,
+        "followRedirect": true
+      },
+      "streamSettings": {
+        "security": "tls",
+        "tlsSettings": {
+          "alpn": ["h2","http/1.1"],
+          "certificates": [
+            {
+              "usage": "issue",
+              "certificateFile": "mycert.crt",
+              "keyFile": "mycert.key"
+            }
+          ]
+        }
+      }
+    }
+  ],
+
+  "outbounds": [
+    {
+      "tag": "block",
+      "protocol": "block"
+    },
+  {
+      "tag": "direct",
+      "protocol": "direct",
+      "streamSettings": {
+        "sockopt": {
+          "domainStrategy": "ForceIP",
+          "happyEyeballs": {
+            "tryDelayMs": 300,
+            "prioritizeIPv6": false,
+            "interleave": 2,
+            "maxConcurrentTry": 20
+          }
+        }
+      }
+  },
+    {
+      "tag": "dns-out",
+      "protocol": "dns",
+      "settings": {"nonIPQuery": "reject", "blockTypes": [0, 65]}
+    },
+  {
+      "tag": "redirect-out-h11",
+      "protocol": "direct",
+      "settings": {
+        "redirect": "127.0.0.1:11666",
+    "ipsBlocked": []
+      }
+    },
+    {
+      "tag": "redirect-out-h211",
+      "protocol": "direct",
+      "settings": {
+        "redirect": "127.0.0.1:11777",
+    "ipsBlocked": []
+      }
+    },
+  {
+      "tag": "tls-repack-google-h11",
+      "protocol": "direct",
+      "streamSettings": {
+        "security": "tls",
+        "tlsSettings": {
+          "serverName": "www.google.com",
+          "verifyPeerCertByName": "fromMitM,www.google.com,dns.google,www.googlevideo.com,www.youtube.com",
+          "alpn": ["http/1.1"],
+          "fingerprint": "chrome"
+        },
+    "sockopt": {
+          "domainStrategy": "ForceIP",
+          "happyEyeballs": {
+            "tryDelayMs": 300,
+            "prioritizeIPv6": false,
+            "interleave": 2,
+            "maxConcurrentTry": 20
+          }
+        }
+      }
+    },
+    {
+      "tag": "tls-repack-google-h211",
+      "protocol": "direct",
+      "settings": {
+        "redirect": "google-main-services.redirect:443"
+      },
+      "streamSettings": {
+        "security": "tls",
+        "tlsSettings": {
+          "serverName": "www.google.com",
+          "verifyPeerCertByName": "fromMitM,www.google.com,dns.google,www.googlevideo.com,www.youtube.com",
+          "alpn": ["h2","http/1.1"],
+          "fingerprint": "chrome"
+        },
+    "sockopt": {
+          "domainStrategy": "ForceIP",
+          "happyEyeballs": {
+            "tryDelayMs": 300,
+            "prioritizeIPv6": false,
+            "interleave": 2,
+            "maxConcurrentTry": 20
+          }
+        }
+      }
+    }
+  ],
+
+  "routing": {
+    "domainStrategy": "AsIs",
+    "rules": [
+      {
+     "outboundTag": "block",
+       "domain": ["geosite:category-ads-all"]
+      },
+      {
+     "outboundTag": "direct",
+       "inboundTag": ["dns_inbound"], "port": 53
+      },
+      {
+     "outboundTag": "dns-out",
+       "port": 53
+      },
+      {
+     "outboundTag": "direct",
+       "domain": ["domain:ir", "geosite:private", "geosite:category-ir"]
+      },
+      {
+     "outboundTag": "direct",
+       "ip": ["geoip:private", "geoip:ir"]
+      },
+      {
+     "outboundTag": "tls-repack-google-h11",
+       "domain": ["domain:googlevideo.com"],
+       "inboundTag": ["tls-decrypt-h11"]
+    },
+      {
+     "outboundTag": "tls-repack-google-h211",
+       "domain": ["geosite:google"],
+       "inboundTag": ["tls-decrypt-h211"]
+    },
+      {
+        "outboundTag": "redirect-out-h11",
+        "network": "tcp",
+        "port": 443,
+        "domain": ["domain:googlevideo.com"]
+      },
+      {
+        "outboundTag": "redirect-out-h211",
+        "network": "tcp",
+        "port": 443,
+        "domain": ["geosite:google"]
+      },
+      {
+     "outboundTag": "direct",
+       "port": "0-65535"
+      }
+    ]
+  }
+}
