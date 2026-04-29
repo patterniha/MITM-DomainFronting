@@ -6,7 +6,7 @@
   },
 
 
-  "remarks": "MITM-DomainFronting_v4",
+  "remarks": "MITM-DomainFronting_v5",
 
   "version": {
     "min": "26.2.6"
@@ -31,7 +31,7 @@
       "google-main-services.redirect": "216.239.38.120",
 	  "vercel-sites.redirect": "react.dev",
 	  "fastly.redirect": "www.python.org",
-	  "amazon-cloudfront.redirect": "letsencrypt.org"
+	  "amazon-cloudfront.redirect": "kubernetes.io"
     },
     "servers": [
       "fakedns",
@@ -258,8 +258,8 @@
       "streamSettings": {
         "security": "tls",
         "tlsSettings": {
-          "serverName": "letsencrypt.org",
-          "verifyPeerCertByName": "fromMitM,letsencrypt.org,aws.amazon.com,aws-us-west-2.amazon.com,www.aws.amazon.com,1.aws-lbr.amazonaws.com,amazonaws-china.com,www.amazonaws-china.com,aws-us-east-1.amazon.com",
+          "serverName": "kubernetes.io",
+          "verifyPeerCertByName": "fromMitM,kubernetes.io,letsencrypt.org,aws.amazon.com,aws-us-west-2.amazon.com,www.aws.amazon.com,1.aws-lbr.amazonaws.com,amazonaws-china.com,www.amazonaws-china.com,aws-us-east-1.amazon.com",
           "alpn": ["fromMitM"],
           "fingerprint": "chrome"
         },
