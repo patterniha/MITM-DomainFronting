@@ -116,8 +116,11 @@ openssl req -x509 -newkey rsa:2048 -keyout mycert.key -out mycert.crt -sha256 -d
 
 ```bash
 cd /path/to/v2rayN-macos-arm64/bin/xray
+export XRAY_LOCATION_ASSET=../
 ./xray run -c MITM-DomainFronting.json
 ```
+
+> **نکته:** فایل‌های `geosite.dat` و `geoip.dat` در نسخه macOS برنامه v2rayN داخل فولدر `bin/` (یک سطح بالاتر از `bin/xray/`) قرار دارند. یا با `export XRAY_LOCATION_ASSET=../` به xray مسیر آن‌ها را معرفی کنید (مانند بالا) یا این دو فایل را به داخل `bin/xray/` کپی کنید. در غیر این صورت xray با خطای `failed to open geosite.dat` متوقف میشود.
 
 #### رفع پیغام امنیتی macOS
 
