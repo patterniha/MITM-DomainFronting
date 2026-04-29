@@ -320,11 +320,6 @@
        "domain": ["geosite:netlify"],
        "inboundTag": ["tls-decrypt-h211"]
 	  },
-	  {
-	   "outboundTag": "tls-repack-fastly",
-       "ip": ["geoip:fastly"],
-       "inboundTag": ["tls-decrypt-h211"]
-	  },
       {
 	   "outboundTag": "block",
        "inboundTag": ["tls-decrypt-h211", "tls-decrypt-h11"]
@@ -344,12 +339,6 @@
       {
 	   "outboundTag": "direct",
        "ip": ["geoip:private", "geoip:ir"]
-      },
-	  {
-        "outboundTag": "redirect-out-h211",
-        "network": "tcp",
-        "port": 443,
-        "ip": ["geoip:fastly"]
       },
       {
 	   "outboundTag": "direct",
