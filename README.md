@@ -94,7 +94,7 @@ https://regery.com/en/security/ssl-tools/self-signed-certificate-generator
 mycert.crt, mycert.key
 را وارد کنید
 
-۴. حال باید سرتیفیک (crt) را به عنوان یک trusted root certificate به سیستم عامل اندروید معرفی کنید برای این کار مراحل زیر را طی کنید:
+۴. حال باید سرتیفیکیت (crt) را به عنوان یک trusted root certificate به سیستم عامل اندروید معرفی کنید برای این کار مراحل زیر را طی کنید:
 
 Setting -> Security and privacy -> More security settings -> Install from device storage -> CA Certificate -> Install anyway -> Select mycert.crt file on your storage.
 
