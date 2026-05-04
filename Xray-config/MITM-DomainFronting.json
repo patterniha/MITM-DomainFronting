@@ -6,7 +6,7 @@
   },
 
 
-  "remarks": "MITM-DomainFronting_v7",
+  "remarks": "MITM-DomainFronting_v8",
 
   "version": {
     "min": "26.2.6"
@@ -28,10 +28,11 @@
   "dns":{
     "hosts": {
       "geosite:category-ads-all": "#3",
-      "google-main-services.redirect": "216.239.38.120",
-	  "vercel-sites.redirect": "react.dev",
-	  "fastly.redirect": "www.python.org",
-	  "amazon-cloudfront.redirect": "kubernetes.io"
+      "google-main-services.redirect": "www.google.com",
+	  "vercel-sites.redirect": "nextjs.org",
+	  "fastly.redirect": "pypi.org",
+	  "amazon-cloudfront.redirect": "kubernetes.io",
+      "github-com.redirect": "github.com"
     },
     "servers": [
       "fakedns",
@@ -208,7 +209,7 @@
       "streamSettings": {
         "security": "tls",
         "tlsSettings": {
-          "serverName": "react.dev",
+          "serverName": "nextjs.org",
           "verifyPeerCertByName": "fromMitM,react.dev,cursor.com,ai-sdk.dev,err.sh,hyper.is,nextjs.org,now.sh,skills.sh,static.fun,title.sh,turborepo.org,vercel-dns.com,vercel-status.com,vercel.app,vercel.blog,vercel.com,vercel.dev,vercel.events,vercel.live,vercel.pub,vercel.sh,vercel.store,zeit-world.co.uk,zeit-world.com,zeit-world.net,zeit-world.org,zeit.co,zeit.sh,zeitworld.com",
           "alpn": ["fromMitM"],
           "fingerprint": "chrome"
@@ -233,7 +234,7 @@
       "streamSettings": {
         "security": "tls",
         "tlsSettings": {
-          "serverName": "www.python.org",
+          "serverName": "pypi.org",
           "verifyPeerCertByName": "fromMitM,www.python.org,pypi.org,fastly.com,www.fastly.com,developer.fastly.com,reddit.com,githubassets.com,github.com,github.io,githubusercontent.com",
           "alpn": ["fromMitM"],
           "fingerprint": "chrome"
@@ -260,6 +261,31 @@
         "tlsSettings": {
           "serverName": "kubernetes.io",
           "verifyPeerCertByName": "fromMitM,kubernetes.io,letsencrypt.org,aws.amazon.com,aws-us-west-2.amazon.com,www.aws.amazon.com,1.aws-lbr.amazonaws.com,amazonaws-china.com,www.amazonaws-china.com,aws-us-east-1.amazon.com",
+          "alpn": ["fromMitM"],
+          "fingerprint": "chrome"
+        },
+		"sockopt": {
+          "domainStrategy": "ForceIP",
+          "happyEyeballs": {
+            "tryDelayMs": 300,
+            "prioritizeIPv6": false,
+            "interleave": 2,
+            "maxConcurrentTry": 20
+          }
+        }
+      }
+    },
+    {
+      "tag": "tls-repack-github-com",
+      "protocol": "direct",
+      "settings": {
+        "redirect": "github-com.redirect:443"
+      },
+      "streamSettings": {
+        "security": "tls",
+        "tlsSettings": {
+          "serverName": "github.com",
+          "verifyPeerCertByName": "fromMitM,github.com,www.github.com",
           "alpn": ["fromMitM"],
           "fingerprint": "chrome"
         },
@@ -320,6 +346,11 @@
        "domain": ["geosite:netlify"],
        "inboundTag": ["tls-decrypt-h211"]
 	  },
+      {
+	   "outboundTag": "tls-repack-github-com",
+       "domain": ["domain:github.com"],
+       "inboundTag": ["tls-decrypt-h211"]
+	  },
 	  {
 	   "outboundTag": "tls-repack-fastly",
        "ip": ["geoip:fastly"],
@@ -339,7 +370,7 @@
         "outboundTag": "redirect-out-h211",
         "network": "tcp",
         "port": 443,
-        "domain": ["geosite:google", "geosite:vercel", "geosite:fastly", "geosite:reddit", "domain:githubassets.com", "domain:githubusercontent.com", "geosite:netlify", "geosite:cnn", "domain:buzzfeed.com"]
+        "domain": ["geosite:google", "geosite:vercel", "geosite:fastly", "geosite:reddit", "domain:githubassets.com", "domain:githubusercontent.com", "geosite:netlify", "geosite:cnn", "domain:buzzfeed.com", "domain:github.com"]
       },
       {
 	   "outboundTag": "direct",
