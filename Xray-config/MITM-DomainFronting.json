@@ -364,7 +364,7 @@
 	  },
 	  {
 	   "outboundTag": "tls-repack-fastly",
-       "domain": ["geosite:fastly", "geosite:reddit", "geosite:cnn", "domain:buzzfeed.com", "domain:release-assets.githubusercontent.com", "domain:private-user-images.githubusercontent.com", "domain:raw.githubusercontent.com", "domain:github.githubassets.com", "domain:avatars.githubusercontent.com", "domain:xtls.github.io"],
+       "domain": ["geosite:fastly", "geosite:reddit", "geosite:cnn", "domain:buzzfeed.com", "domain:release-assets.githubusercontent.com", "domain:private-user-images.githubusercontent.com", "domain:raw.githubusercontent.com", "domain:github.githubassets.com", "domain:avatars.githubusercontent.com", "domain:xtls.github.io", "domain:downloads.vivaldi.com", "domain:dl.flathub.org"],
        "inboundTag": ["tls-decrypt-h211"]
 	  },
 	  {
@@ -401,7 +401,7 @@
         "outboundTag": "redirect-out-h211",
         "network": "tcp",
         "port": 443,
-        "domain": ["geosite:google", "geosite:vercel", "geosite:fastly", "geosite:reddit", "geosite:netlify", "geosite:cnn", "domain:buzzfeed.com", "domain:release-assets.githubusercontent.com", "domain:private-user-images.githubusercontent.com", "domain:raw.githubusercontent.com", "domain:github.githubassets.com", "domain:avatars.githubusercontent.com", "domain:xtls.github.io", "domain:gist.github.com", "domain:objects-origin.githubusercontent.com"]
+        "domain": ["geosite:google", "geosite:vercel", "geosite:fastly", "geosite:reddit", "geosite:netlify", "geosite:cnn", "domain:buzzfeed.com", "domain:release-assets.githubusercontent.com", "domain:private-user-images.githubusercontent.com", "domain:raw.githubusercontent.com", "domain:github.githubassets.com", "domain:avatars.githubusercontent.com", "domain:xtls.github.io", "domain:gist.github.com", "domain:objects-origin.githubusercontent.com", "domain:downloads.vivaldi.com", "domain:dl.flathub.org"]
       },
       {
         "outboundTag": "block",
