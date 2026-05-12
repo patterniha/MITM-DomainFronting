@@ -13,7 +13,9 @@
   },
 
   "log": {
-    "loglevel": "warning", "dnsLog": false, "access": "none"
+    "loglevel": "warning",
+    "dnsLog": false,
+    "access": "none"
   },
 
   "policy": {
@@ -25,21 +27,21 @@
     }
   },
 
-  "dns":{
+  "dns": {
     "hosts": {
       "geosite:category-ads-all": "#3",
       "google-main-services.redirect": "www.google.com",
-	  "vercel-sites.redirect": "nextjs.org",
-	  "fastly.redirect": "pypi.org",
-	  "amazon-cloudfront.redirect": "kubernetes.io",
+      "vercel-sites.redirect": "nextjs.org",
+      "fastly.redirect": "pypi.org",
+      "amazon-cloudfront.redirect": "kubernetes.io",
       "github-com.redirect": "github.com",
       "github-com-2.redirect": "central.github.com"
     },
     "servers": [
       "fakedns",
-	  {
-	    "address": "localhost",
-	    "unexpectedIPs": ["10.10.34.0/24", "2001:4188:2:600::/64"]
+      {
+        "address": "localhost",
+        "unexpectedIPs": ["10.10.34.0/24", "2001:4188:2:600::/64"]
       }
     ],
     "queryStrategy": "UseSystem",
@@ -47,8 +49,7 @@
     "tag": "dns_inbound"
   },
 
-  "inbounds": [
-    {
+  "inbounds": [{
       "tag": "mixed-in",
       "port": 10808,
       "protocol": "mixed",
@@ -68,7 +69,7 @@
         }
       }
     },
-	{
+    {
       "port": 11666,
       "tag": "tls-decrypt-h11",
       "protocol": "tunnel",
@@ -81,13 +82,11 @@
         "security": "tls",
         "tlsSettings": {
           "alpn": ["http/1.1"],
-          "certificates": [
-            {
-              "usage": "issue",
-              "certificateFile": "mycert.crt",
-              "keyFile": "mycert.key"
-            }
-          ]
+          "certificates": [{
+            "usage": "issue",
+            "certificateFile": "mycert.crt",
+            "keyFile": "mycert.key"
+          }]
         }
       }
     },
@@ -103,25 +102,22 @@
       "streamSettings": {
         "security": "tls",
         "tlsSettings": {
-          "alpn": ["h2","http/1.1"],
-          "certificates": [
-            {
-              "usage": "issue",
-              "certificateFile": "mycert.crt",
-              "keyFile": "mycert.key"
-            }
-          ]
+          "alpn": ["h2", "http/1.1"],
+          "certificates": [{
+            "usage": "issue",
+            "certificateFile": "mycert.crt",
+            "keyFile": "mycert.key"
+          }]
         }
       }
     }
   ],
 
-  "outbounds": [
-    {
+  "outbounds": [{
       "tag": "block",
       "protocol": "block"
     },
-	{
+    {
       "tag": "direct",
       "protocol": "direct",
       "streamSettings": {
@@ -135,12 +131,12 @@
           }
         }
       }
-	},
+    },
     {
       "tag": "dns-out",
       "protocol": "dns"
     },
-	{
+    {
       "tag": "redirect-out-h11",
       "protocol": "direct",
       "settings": {
@@ -154,7 +150,7 @@
         "redirect": "127.0.0.1:11777"
       }
     },
-	{
+    {
       "tag": "tls-repack-googlevideo",
       "protocol": "direct",
       "streamSettings": {
@@ -165,7 +161,7 @@
           "alpn": ["fromMitM"],
           "fingerprint": "chrome"
         },
-		"sockopt": {
+        "sockopt": {
           "domainStrategy": "ForceIP",
           "happyEyeballs": {
             "tryDelayMs": 300,
@@ -190,7 +186,7 @@
           "alpn": ["fromMitM"],
           "fingerprint": "chrome"
         },
-		"sockopt": {
+        "sockopt": {
           "domainStrategy": "ForceIP",
           "happyEyeballs": {
             "tryDelayMs": 300,
@@ -201,7 +197,7 @@
         }
       }
     },
-	{
+    {
       "tag": "tls-repack-vercel-sites",
       "protocol": "direct",
       "settings": {
@@ -215,7 +211,7 @@
           "alpn": ["fromMitM"],
           "fingerprint": "chrome"
         },
-		"sockopt": {
+        "sockopt": {
           "domainStrategy": "ForceIP",
           "happyEyeballs": {
             "tryDelayMs": 300,
@@ -226,7 +222,7 @@
         }
       }
     },
-	{
+    {
       "tag": "tls-repack-fastly",
       "protocol": "direct",
       "settings": {
@@ -236,11 +232,11 @@
         "security": "tls",
         "tlsSettings": {
           "serverName": "pypi.org",
-          "verifyPeerCertByName": "fromMitM,www.python.org,pypi.org,fastly.com,www.fastly.com,developer.fastly.com,reddit.com,githubassets.com,github.com,github.io,githubusercontent.com",
+          "verifyPeerCertByName": "fromMitM,www.python.org,pypi.org,fastly.com,www.fastly.com,developer.fastly.com,reddit.com,githubassets.com,github.com,github.io,githubusercontent.com,domain:github.dev,assets.github.dev,api.github.com",
           "alpn": ["fromMitM"],
           "fingerprint": "chrome"
         },
-		"sockopt": {
+        "sockopt": {
           "domainStrategy": "ForceIP",
           "happyEyeballs": {
             "tryDelayMs": 300,
@@ -251,7 +247,7 @@
         }
       }
     },
-	{
+    {
       "tag": "tls-repack-amazon-cloudfront",
       "protocol": "direct",
       "settings": {
@@ -265,7 +261,7 @@
           "alpn": ["fromMitM"],
           "fingerprint": "chrome"
         },
-		"sockopt": {
+        "sockopt": {
           "domainStrategy": "ForceIP",
           "happyEyeballs": {
             "tryDelayMs": 300,
@@ -290,7 +286,7 @@
           "alpn": ["fromMitM"],
           "fingerprint": "chrome"
         },
-		"sockopt": {
+        "sockopt": {
           "domainStrategy": "ForceIP",
           "happyEyeballs": {
             "tryDelayMs": 300,
@@ -315,7 +311,7 @@
           "alpn": ["fromMitM"],
           "fingerprint": "chrome"
         },
-		"sockopt": {
+        "sockopt": {
           "domainStrategy": "ForceIP",
           "happyEyeballs": {
             "tryDelayMs": 300,
@@ -330,67 +326,67 @@
 
   "routing": {
     "domainStrategy": "IPOnDemand",
-    "rules": [
-      {
-	   "outboundTag": "block",
-       "domain": ["geosite:category-ads-all"]
+    "rules": [{
+        "outboundTag": "block",
+        "domain": ["geosite:category-ads-all"]
       },
       {
-	   "outboundTag": "direct",
-       "inboundTag": ["dns_inbound"], "port": 53
+        "outboundTag": "direct",
+        "inboundTag": ["dns_inbound"],
+        "port": 53
       },
       {
-	   "outboundTag": "dns-out",
-       "port": 53
+        "outboundTag": "dns-out",
+        "port": 53
       },
       {
-	   "outboundTag": "direct",
-       "domain": ["domain:ir", "geosite:private", "geosite:category-ir", "geosite:khanacademy"]
+        "outboundTag": "direct",
+        "domain": ["domain:ir", "geosite:private", "geosite:category-ir", "geosite:khanacademy"]
       },
       {
-	   "outboundTag": "tls-repack-googlevideo",
-       "domain": ["domain:googlevideo.com"],
-       "inboundTag": ["tls-decrypt-h11"]
-	  },
+        "outboundTag": "tls-repack-googlevideo",
+        "domain": ["domain:googlevideo.com"],
+        "inboundTag": ["tls-decrypt-h11"]
+      },
       {
-	   "outboundTag": "tls-repack-google-main-services",
-       "domain": ["geosite:google"],
-       "inboundTag": ["tls-decrypt-h211"]
-	  },
-	  {
-	   "outboundTag": "tls-repack-vercel-sites",
-       "domain": ["geosite:vercel"],
-       "inboundTag": ["tls-decrypt-h211"]
-	  },
-	  {
-	   "outboundTag": "tls-repack-fastly",
-       "domain": ["geosite:fastly", "geosite:reddit", "geosite:cnn", "domain:buzzfeed.com", "domain:release-assets.githubusercontent.com", "domain:private-user-images.githubusercontent.com", "domain:raw.githubusercontent.com", "domain:github.githubassets.com", "domain:avatars.githubusercontent.com", "domain:xtls.github.io"],
-       "inboundTag": ["tls-decrypt-h211"]
-	  },
-	  {
-	   "outboundTag": "tls-repack-amazon-cloudfront",
-       "domain": ["geosite:netlify"],
-       "inboundTag": ["tls-decrypt-h211"]
-	  },
+        "outboundTag": "tls-repack-google-main-services",
+        "domain": ["geosite:google"],
+        "inboundTag": ["tls-decrypt-h211"]
+      },
       {
-	   "outboundTag": "tls-repack-github-com",
-       "domain": ["domain:gist.github.com"],
-       "inboundTag": ["tls-decrypt-h211"]
-	  },
+        "outboundTag": "tls-repack-vercel-sites",
+        "domain": ["geosite:vercel"],
+        "inboundTag": ["tls-decrypt-h211"]
+      },
       {
-	   "outboundTag": "tls-repack-github-com-2",
-       "domain": ["domain:objects-origin.githubusercontent.com"],
-       "inboundTag": ["tls-decrypt-h211"]
-	  },
-	  {
-	   "outboundTag": "tls-repack-fastly",
-       "ip": ["geoip:fastly"],
-       "inboundTag": ["tls-decrypt-h211"]
-	  },
+        "outboundTag": "tls-repack-fastly",
+        "domain": ["geosite:fastly", "geosite:reddit", "geosite:cnn", "domain:buzzfeed.com", "domain:release-assets.githubusercontent.com", "domain:private-user-images.githubusercontent.com", "domain:raw.githubusercontent.com", "domain:github.githubassets.com", "domain:avatars.githubusercontent.com", "domain:xtls.github.io", "domain:github.dev", "domain:assets.github.dev", "api.github.com"],
+        "inboundTag": ["tls-decrypt-h211"]
+      },
       {
-	   "outboundTag": "block",
-       "inboundTag": ["tls-decrypt-h211", "tls-decrypt-h11"]
-	  },
+        "outboundTag": "tls-repack-amazon-cloudfront",
+        "domain": ["geosite:netlify"],
+        "inboundTag": ["tls-decrypt-h211"]
+      },
+      {
+        "outboundTag": "tls-repack-github-com",
+        "domain": ["domain:gist.github.com"],
+        "inboundTag": ["tls-decrypt-h211"]
+      },
+      {
+        "outboundTag": "tls-repack-github-com-2",
+        "domain": ["domain:objects-origin.githubusercontent.com"],
+        "inboundTag": ["tls-decrypt-h211"]
+      },
+      {
+        "outboundTag": "tls-repack-fastly",
+        "ip": ["geoip:fastly"],
+        "inboundTag": ["tls-decrypt-h211"]
+      },
+      {
+        "outboundTag": "block",
+        "inboundTag": ["tls-decrypt-h211", "tls-decrypt-h11"]
+      },
       {
         "outboundTag": "redirect-out-h11",
         "network": "tcp",
@@ -401,29 +397,29 @@
         "outboundTag": "redirect-out-h211",
         "network": "tcp",
         "port": 443,
-        "domain": ["geosite:google", "geosite:vercel", "geosite:fastly", "geosite:reddit", "geosite:netlify", "geosite:cnn", "domain:buzzfeed.com", "domain:release-assets.githubusercontent.com", "domain:private-user-images.githubusercontent.com", "domain:raw.githubusercontent.com", "domain:github.githubassets.com", "domain:avatars.githubusercontent.com", "domain:xtls.github.io", "domain:gist.github.com", "domain:objects-origin.githubusercontent.com"]
+        "domain": ["geosite:google", "geosite:vercel", "geosite:fastly", "geosite:reddit", "geosite:netlify", "geosite:cnn", "domain:buzzfeed.com", "domain:release-assets.githubusercontent.com", "domain:private-user-images.githubusercontent.com", "domain:raw.githubusercontent.com", "domain:github.githubassets.com", "domain:avatars.githubusercontent.com", "domain:xtls.github.io", "domain:gist.github.com", "domain:objects-origin.githubusercontent.com", "domain:github.dev", "domain:assets.github.dev", "api.github.com"]
       },
       {
         "outboundTag": "block",
         "ip": ["10.10.34.0/24", "2001:4188:2:600::/64"]
       },
       {
-	   "outboundTag": "direct",
-       "ip": ["geoip:private", "geoip:ir"]
+        "outboundTag": "direct",
+        "ip": ["geoip:private", "geoip:ir"]
       },
-	  {
+      {
         "outboundTag": "redirect-out-h211",
         "network": "tcp",
         "port": 443,
         "ip": ["geoip:fastly"]
       },
       {
-	   "outboundTag": "direct",
-       "ip": ["0.0.0.0/0", "::/0"]
+        "outboundTag": "direct",
+        "ip": ["0.0.0.0/0", "::/0"]
       },
       {
-	   "outboundTag": "block",
-       "port": "0-65535"
+        "outboundTag": "block",
+        "port": "0-65535"
       }
     ]
   }
