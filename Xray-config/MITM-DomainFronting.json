@@ -7,7 +7,7 @@
   },
 
 
-  "remarks": "MITM-DomainFronting_v22",
+  "remarks": "MITM-DomainFronting_v23",
 
   "version": {
     "min": "26.2.6"
@@ -30,7 +30,8 @@
     "hosts": {
       "geosite:category-ads-all": "#3",
 	  "fastly.redirect": "github.githubassets.com",
-      "dns.redirect": ["1.1.1.1", "1.0.0.1"]
+      "dns.cloudflare.redirect": ["1.1.1.1", "1.0.0.1"],
+      "dns.google.redirect": ["8.8.8.8", "8.8.4.4"]
     },
     "servers": [
       {
@@ -38,14 +39,18 @@
         "domains": ["domain:ir", "geosite:private", "geosite:category-ir", "full:github.githubassets.com"]
       },
       {
-        "tag": "no-filter-dns",
+        "tag": "no-filter-dns-cloudflare",
         "address": "h2c://1.1.1.1/dns-query",
-        "timeoutMs": 15000,
-        "finalQuery": true
+        "timeoutMs": 6000
+      },
+      {
+        "tag": "no-filter-dns-google",
+        "address": "h2c://8.8.8.8/dns-query",
+        "timeoutMs": 6000
       },
       {
         "address": "localhost",
-        "domains": ["domain:ir", "geosite:private", "geosite:category-ir", "full:github.githubassets.com"],
+        "timeoutMs": 4000,
         "finalQuery": true
       }
     ],
@@ -184,16 +189,41 @@
       }
     },
     {
-      "tag": "tls-repack-dns",
+      "tag": "tls-repack-dns-cloudflare",
       "protocol": "direct",
       "settings": {
-        "redirect": "dns.redirect:443"
+        "redirect": "dns.cloudflare.redirect:443"
       },
       "streamSettings": {
         "security": "tls",
         "tlsSettings": {
           "serverName": "www.microsoft.com",
-          "verifyPeerCertByName": "fromMitM,www.microsoft.com,www.google.com,dns.google,cloudflare-dns.com,one.one.one.one",
+          "verifyPeerCertByName": "fromMitM,www.microsoft.com,www.google.com,dns.google,cloudflare-dns.com,one.one.one.one,1.1.1.1,1.0.0.1",
+          "alpn": ["fromMitM"],
+          "fingerprint": "chrome"
+        },
+		"sockopt": {
+          "domainStrategy": "ForceIP",
+          "happyEyeballs": {
+            "tryDelayMs": 300,
+            "prioritizeIPv6": false,
+            "interleave": 2,
+            "maxConcurrentTry": 20
+          }
+        }
+      }
+    },
+    {
+      "tag": "tls-repack-dns-google",
+      "protocol": "direct",
+      "settings": {
+        "redirect": "dns.google.redirect:443"
+      },
+      "streamSettings": {
+        "security": "tls",
+        "tlsSettings": {
+          "serverName": "www.google.com",
+          "verifyPeerCertByName": "fromMitM,www.google.com,dns.google,8.8.8.8,8.8.4.4",
           "alpn": ["fromMitM"],
           "fingerprint": "chrome"
         },
@@ -287,8 +317,12 @@
        "domain": ["geosite:category-ads-all"]
       },
       {
-	   "outboundTag": "tls-repack-dns",
-       "inboundTag": ["no-filter-dns"]
+	   "outboundTag": "tls-repack-dns-cloudflare",
+       "inboundTag": ["no-filter-dns-cloudflare"]
+      },
+      {
+	   "outboundTag": "tls-repack-dns-google",
+       "inboundTag": ["no-filter-dns-google"]
       },
       {
 	   "outboundTag": "dns-out",
