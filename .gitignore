@@ -1,1 +1,8 @@
 /.idea
+__pycache__/
+mycert.crt
+mycert.key
+*.log
+*.tmp
+geoip.dat
+geosite.dat
