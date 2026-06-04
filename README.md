@@ -127,7 +127,19 @@ firefox browser -> Settings -> About Firefox -> Tap the Firefox logo five times 
 
  بنابراین برای استفاده از google meet و یا google drive و ... باید از مرورگر استفاده کنید.
  
+## راهنماهای تکمیلی و ابزارهای کمکی جدید
+
+در این نسخه جدید، ابزارها و مستندات زیر برای راه‌اندازی و مدیریت راحت‌تر اضافه شده‌اند:
+
+- **تولید خودکار گواهی در سیستم‌عامل‌های مختلف**: فایل [certificate_generator.sh](Xray-config/certificate_generator.sh) برای کاربران مک و لینوکس اضافه شده است.
+- **دانلود خودکار Xray Core**: اسکریپت پایتون [install_xray.py](scripts/install_xray.py) نسخه متناسب با سیستم‌عامل شما را مستقیماً دانلود و آماده می‌کند.
+- **بررسی و مدیریت امنیت کلید خصوصی**: اسکریپت [mitm_trust.py](scripts/mitm_trust.py) وضعیت سلامت گواهی را گزارش داده و امکان رمزنگاری کلید خصوصی در ویندوز (DPAPI) را برای بالا بردن امنیت فراهم می‌کند.
+- **پیکربندی‌های بهینه‌شده**: علاوه بر کانفیگ اصلی، نسخه‌های [Balanced (متعادل)](Xray-config/MITM-DomainFronting.balanced.json)، [Strict (سخت‌گیرانه)](Xray-config/MITM-DomainFronting.strict.json) و [Compatibility (سازگار با پهنای باند قدیمی)](Xray-config/MITM-DomainFronting.compatibility.json) به پوشه `Xray-config` اضافه شده‌اند.
+- **فهرست مستندات فنی**: لیست کاملی از راهنماهای عیب‌یابی، امنیت، چرخه عمر گواهی و نحوه نصب گواهی در پلتفرم‌های مختلف در پوشه [docs/](docs/) قرار گرفته است.
+
 ۳. زحمت زیادی برای برای این برنامه کشیده شده از نوشتن کد پایتون اولیه تا اضافه کردن آن به هسته xray امیدوارم حمایت از بنده فراموش نشه همچنان کارهای بزرگی در پیش هست ...
+
+
 
 </div>
 
@@ -136,3 +148,4 @@ USDT (BEP20): 0x76a768B53Ca77B43086946315f0BDF21156bF424
 USDT (TRC20): TU5gKvKqcXPn8itp1DouBCwcqGHMemBm8o
 
 @patterniha
+

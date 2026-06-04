@@ -1,11 +1,5 @@
 {
-  "__Credits__": {
-    "creator": "@patterniha",
-    "donate1": "USDT (BEP20): 0x76a768B53Ca77B43086946315f0BDF21156bF424",
-    "donate2": "USDT (TRC20): TU5gKvKqcXPn8itp1DouBCwcqGHMemBm8o",
-    "donate3": "TON (TON): UQAc-mZB3y7uxWHKiMmq0ORZEYgycWDWZ4V1k73HsXvTJx-i"
-  },
-  "remarks": "MITM-DomainFronting_v23",
+  "remarks": "MITM-DomainFronting_v23_strict",
   "version": {
     "min": "26.2.6"
   },
@@ -293,6 +287,13 @@
             "maxConcurrentTry": 4
           }
         }
+      },
+      "mitmMeta": {
+        "ja3_pool_id": "chrome-baseline-v1",
+        "ja3_template_id": "rust-fixture-grease-stripped",
+        "ja3_template_index": 0,
+        "ja3_hash_md5": "e5e1e38579ae55ca3ec29f347d63149e",
+        "operating_profile": "strict"
       }
     },
     {
@@ -320,6 +321,13 @@
             "maxConcurrentTry": 4
           }
         }
+      },
+      "mitmMeta": {
+        "ja3_pool_id": "chrome-baseline-v1",
+        "ja3_template_id": "rust-fixture-grease-stripped",
+        "ja3_template_index": 0,
+        "ja3_hash_md5": "e5e1e38579ae55ca3ec29f347d63149e",
+        "operating_profile": "strict"
       }
     },
     {
@@ -344,6 +352,13 @@
             "maxConcurrentTry": 4
           }
         }
+      },
+      "mitmMeta": {
+        "ja3_pool_id": "chrome-baseline-v1",
+        "ja3_template_id": "rust-fixture-grease-stripped",
+        "ja3_template_index": 0,
+        "ja3_hash_md5": "e5e1e38579ae55ca3ec29f347d63149e",
+        "operating_profile": "strict"
       }
     },
     {
@@ -371,6 +386,13 @@
             "maxConcurrentTry": 4
           }
         }
+      },
+      "mitmMeta": {
+        "ja3_pool_id": "chrome-baseline-v1",
+        "ja3_template_id": "rust-fixture-grease-stripped",
+        "ja3_template_index": 0,
+        "ja3_hash_md5": "e5e1e38579ae55ca3ec29f347d63149e",
+        "operating_profile": "strict"
       }
     },
     {
@@ -395,6 +417,13 @@
             "maxConcurrentTry": 4
           }
         }
+      },
+      "mitmMeta": {
+        "ja3_pool_id": "chrome-baseline-v1",
+        "ja3_template_id": "rust-fixture-grease-stripped",
+        "ja3_template_index": 0,
+        "ja3_hash_md5": "e5e1e38579ae55ca3ec29f347d63149e",
+        "operating_profile": "strict"
       }
     }
   ],
@@ -436,6 +465,12 @@
           "geosite:khanacademy"
         ],
         "ruleTag": "r040_direct_private_regional"
+      },
+      {
+        "outboundTag": "block",
+        "network": "udp",
+        "port": 443,
+        "ruleTag": "r050_block_quic_udp443"
       },
       {
         "outboundTag": "tls-repack-google",
@@ -571,12 +606,12 @@
         "ruleTag": "r320_redirect_fastly_ip_tcp443_h2"
       },
       {
-        "outboundTag": "direct",
+        "outboundTag": "block",
         "ip": [
           "0.0.0.0/0",
           "::/0"
         ],
-        "ruleTag": "r900_direct_global_catchall"
+        "ruleTag": "r900_block_global_catchall"
       },
       {
         "outboundTag": "block",
@@ -584,5 +619,13 @@
         "ruleTag": "r999_block_final"
       }
     ]
+  },
+  "mitm": {
+    "ja3_pool_id": "chrome-baseline-v1",
+    "ja3_template_id": "rust-fixture-grease-stripped",
+    "ja3_template_index": 0,
+    "ja3_hash_md5": "e5e1e38579ae55ca3ec29f347d63149e",
+    "operating_profile": "strict",
+    "ja3_pool_file": "config-src/templates/ja3-pools/chrome-baseline-pool.json"
   }
 }
