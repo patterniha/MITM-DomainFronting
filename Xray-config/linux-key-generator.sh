@@ -37,8 +37,12 @@ generate_certificate() {
         return 1
     fi
     
+    local script_dir=$(dirname "$0")
+    local cert_path="$script_dir/mycert.crt"
+    local key_path="$script_dir/mycert.key"
+    
     # Check if files already exist
-    if [ -f "mycert.crt" ] || [ -f "mycert.key" ]; then
+    if [ -f "$cert_path" ] || [ -f "$key_path" ]; then
         print_warning "Certificate files already exist."
         read -p "Overwrite? (y/N): " -n 1 -r
         echo
@@ -49,13 +53,13 @@ generate_certificate() {
     fi
     
     openssl req -x509 -newkey rsa:2048 -nodes \
-        -keyout mycert.key -out mycert.crt \
+        -keyout "$key_path" -out "$cert_path" \
         -days 365 -subj "/C=US/ST=State/L=City/O=Org/CN=localhost" 2>/dev/null
     
-    if [ $? -eq 0 ] && [ -f "mycert.crt" ] && [ -f "mycert.key" ]; then
-        chmod 600 mycert.key
-        print_success "Certificate generated: mycert.crt and mycert.key"
-        ls -lh mycert.crt mycert.key
+    if [ $? -eq 0 ] && [ -f "$cert_path" ] && [ -f "$key_path" ]; then
+        chmod 600 "$key_path"
+        print_success "Certificate generated: $cert_path and $key_path"
+        ls -lh "$cert_path" "$key_path"
     else
         print_error "Certificate generation failed"
         return 1
