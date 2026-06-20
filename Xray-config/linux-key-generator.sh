@@ -1,11 +1,11 @@
 #!/bin/bash
 
 # --- Script to generate self-signed SSL certificate and key ---
-# Output files: mycert.crt and mycert.key
+# Output files: Xray-config/mycert.crt and Xray-config/mycert.key
 
 # Configuration variables
-CERT_FILE="mycert.crt"
-KEY_FILE="mycert.key"
+CERT_FILE="Xray-config/mycert.crt"
+KEY_FILE="Xray-config/mycert.key"
 DAYS_VALID=365
 KEY_SIZE=2048
 
