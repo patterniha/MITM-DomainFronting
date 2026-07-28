@@ -270,7 +270,7 @@
         "security": "tls",
         "tlsSettings": {
           "serverName": "www.microsoft.com",
-          "verifyPeerCertByName": "fromMitM,www.google.com,www.microsoft.com,www.whatsapp.com,www.facebook.com,www.ar.meta.com,www.fb.com,www.whatsapp.net,www.atlassolutions.com,www.secure.facebook.com,www.extern.facebook.com,www.internet.org,www.oculus.com,www.wit.ai,www.facebook-dns.com,www.instagram.com,www.meta.com,www.external-disputes.meta.com,www.fbe2e.com,www.cloud.x2p.facebook.net,www.secure.latest.facebook.com",
+          "verifyPeerCertByName": "fromMitM,www.google.com,www.microsoft.com,www.whatsapp.com,www.facebook.com,www.ar.meta.com,www.fb.com,www.whatsapp.net,www.atlassolutions.com,www.secure.facebook.com,www.extern.facebook.com,www.internet.org,www.oculus.com,www.wit.ai,www.facebook-dns.com,www.instagram.com,www.meta.com,www.external-disputes.meta.com,www.fbe2e.com,www.cloud.x2p.facebook.net,www.secure.latest.facebook.com,twitch.tv",
           "alpn": ["fromMitM"],
           "fingerprint": "chrome"
         },
@@ -327,7 +327,7 @@
 	  },
       {
 	   "outboundTag": "tls-repack-meta",
-       "domain": ["geosite:meta"],
+       "domain": ["geosite:meta", "geosite:twitch"],
        "inboundTag": ["tls-decrypt-h211"]
 	  },
 	  {
