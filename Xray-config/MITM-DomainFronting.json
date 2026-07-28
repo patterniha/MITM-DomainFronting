@@ -96,8 +96,8 @@
           "certificates": [
             {
               "usage": "issue",
-              "certificateFile": "mycert.crt",
-              "keyFile": "mycert.key"
+              "certificateFile": "../Xray-config/mycert.crt",
+              "keyFile": "../Xray-config/mycert.key"
             }
           ]
         }
@@ -119,8 +119,8 @@
           "certificates": [
             {
               "usage": "issue",
-              "certificateFile": "mycert.crt",
-              "keyFile": "mycert.key"
+              "certificateFile": "../Xray-config/mycert.crt",
+              "keyFile": "../Xray-config/mycert.key"
             }
           ]
         }
