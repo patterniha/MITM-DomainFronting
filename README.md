@@ -136,3 +136,55 @@ USDT (BEP20): 0x76a768B53Ca77B43086946315f0BDF21156bF424
 USDT (TRC20): TU5gKvKqcXPn8itp1DouBCwcqGHMemBm8o
 
 @patterniha
+
+## راه اندازی در لینوکس (فدورا، اوبونتو، دبیان، آرچ)
+
+برای راهنمای کامل نصب و راه‌اندازی در لینوکس، فایل [README_LINUX.md](README_LINUX.md) را مطالعه کنید.
+
+### خلاصه مراحل:
+
+۱. نصب Xray:
+```bash
+sudo ./mitm_linux.sh install-xray
+```
+
+۲. ایجاد سرتیفیکیت:
+```bash
+cd Xray-config
+./certificate_generator.sh
+cd ..
+```
+
+۳. نصب سرتیفیکیت در سیستم:
+```bash
+sudo ./mitm_linux.sh install-cert
+```
+
+۴. نصب سرتیفیکیت در مرورگر (Firefox یا Chrome) - مراحل دقیق در README_LINUX.md
+
+۵. اجرای Xray:
+```bash
+./mitm_linux.sh run
+```
+
+۶. تنظیم پروکسی سیستم یا مرورگر به آدرس `127.0.0.1:10808`
+
+**توجه:** برای Fedora و سایر توزیع‌های لینوکس، تمام اسکریپت‌های لازم آماده شده‌اند.
+
+---
+
+## Linux Setup (Fedora, Ubuntu, Debian, Arch)
+
+For complete installation and setup guide for Linux, see [README_LINUX.md](README_LINUX.md).
+
+### Quick Steps:
+
+1. Install Xray: `sudo ./mitm_linux.sh install-xray`
+2. Generate certificate: `./mitm_linux.sh generate-cert`
+3. Install certificate to system: `sudo ./mitm_linux.sh install-cert`
+4. Install certificate in browser (Firefox or Chrome) - see README_LINUX.md
+5. Run Xray: `./mitm_linux.sh run`
+6. Configure proxy to `127.0.0.1:10808`
+
+**Note:** All necessary scripts are provided for Fedora and other Linux distributions.
+

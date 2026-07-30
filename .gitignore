@@ -1,1 +1,5 @@
 /.idea
+Xray-config/mycert.crt
+.gitignore
+mycert.crt
+mycert.key
