@@ -1,0 +1,607 @@
+{
+  "__Credits__": {
+    "creator": "@patterniha",
+    "donate1": "USDT (BEP20): 0x76a768B53Ca77B43086946315f0BDF21156bF424",
+    "donate2": "USDT (TRC20): TU5gKvKqcXPn8itp1DouBCwcqGHMemBm8o",
+    "donate3": "TON (TON): UQAc-mZB3y7uxWHKiMmq0ORZEYgycWDWZ4V1k73HsXvTJx-i"
+  },
+
+
+  "remarks": "MITM-DomainFronting-v24-fragA",
+
+  "version": {
+    "min": "26.11.23"
+  },
+
+  "log": {
+    "loglevel": "warning", "dnsLog": false, "access": "none"
+  },
+
+  "policy": {
+    "levels": {
+      "0": {
+        "uplinkOnly": 0,
+        "downlinkOnly": 0
+      },
+      "12": {
+        "uplinkOnly": 0,
+        "downlinkOnly": 0,
+        "connIdle": 12
+      }
+    }
+  },
+
+  "dns":{
+    "hosts": {
+      "dns.redirect": ["2606:4700:4700::1111", "2606:4700:4700::1001", "1.1.1.1", "1.0.0.1"],
+      "cloudflare.redirect": ["2606:4700:4408::ac40:9bd1", "2a06:98c1:3122::", "2a06:98c1:3101::6812:202f", "2a06:98c1:3123::", "188.114.99.0"],
+      "x.redirect": ["188.114.99.0"],
+      "fastly.redirect": ["2a04:4e42:200::223", "2a04:4e42::223", "2a04:4e42:400::223", "2a04:4e42:600::223", "151.101.64.223", "151.101.0.223", "151.101.128.223", "151.101.192.223"]
+    },
+    "servers": [
+      {
+        "address": "fakedns",
+        "domains": ["domain:ir", "geosite:private", "geosite:category-ir", "geosite:category-ai-cn", "geosite:category-ai-!cn", "geosite:category-ai-ru", "domain:cloudflare.com", "geosite:category-speedtest", "geosite:category-ip-geo-detect"]
+      },
+      {
+        "tag": "no-filter-dns",
+        "address": "h2c+one://one.one.one.one/dns-query",
+        "timeoutMs": 12000,
+        "finalQuery": true
+      },
+      {
+        "tag": "domestic-dns",
+        "address": "localhost",
+        "domains": ["domain:ir", "geosite:private", "geosite:category-ir", "geosite:category-ai-cn", "geosite:category-ai-!cn", "geosite:category-ai-ru", "domain:cloudflare.com", "geosite:category-speedtest", "geosite:category-ip-geo-detect"],
+        "timeoutMs": 12000,
+        "finalQuery": true
+      }
+    ],
+    "queryStrategy": "UseSystem",
+    "useSystemHosts": true,
+	"serveStale": true,
+    "skipHostsWhenFakeEnable": true
+  },
+
+  "inbounds": [
+    {
+      "tag": "mixed-in",
+      "listen": "127.0.0.1",
+      "port": 10808,
+      "protocol": "mixed",
+      "sniffing": {
+        "enabled": true,
+        "destOverride": ["fakedns", "tls", "http", "quic"],
+        "routeOnly": false
+      },
+      "settings": {
+        "udp": true,
+        "ip": "127.0.0.1"
+      }
+    },
+    {
+      "tag": "tls-decrypt-h11",
+      "listen": "127.0.0.1",
+      "port": 11666,
+      "protocol": "tunnel",
+      "settings": {
+        "network": "tcp",
+        "rewritePort": 443,
+        "followRedirect": true
+      },
+      "streamSettings": {
+        "security": "tls",
+        "tlsSettings": {
+          "alpn": ["http/1.1"],
+          "certificates": [
+            {
+              "usage": "issue",
+              "certificateFile": "mycert.crt",
+              "keyFile": "mycert.key"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "tag": "tls-decrypt-h211",
+      "listen": "127.0.0.1",
+      "port": 11777,
+      "protocol": "tunnel",
+      "settings": {
+        "network": "tcp",
+        "rewritePort": 443,
+        "followRedirect": true
+      },
+      "streamSettings": {
+        "security": "tls",
+        "tlsSettings": {
+          "alpn": ["h2","http/1.1"],
+          "certificates": [
+            {
+              "usage": "issue",
+              "certificateFile": "mycert.crt",
+              "keyFile": "mycert.key"
+            }
+          ]
+        }
+      }
+    }
+  ],
+
+  "outbounds": [
+    {
+      "tag": "block",
+      "protocol": "block"
+    },
+    {
+      "tag": "tcp-direct",
+      "protocol": "direct",
+      "streamSettings": {
+        "finalmask": {
+          "tcp": [
+            {"type": "merge", "settings": {"times": 100, "delayMs": 30, "maxBytes": 16384}}
+          ]
+        },
+        "sockopt": {
+          "tcpUserTimeout": 4000,
+          "domainStrategy": "ForceIP",
+          "happyEyeballs": {"tryDelayMs": 300, "prioritizeIPv6": true, "interleave": 4, "assuranceFirstInterleave": true, "maxConcurrentTry": 32}
+        }
+      }
+    },
+	{
+      "tag": "udp-direct",
+      "protocol": "direct",
+      "streamSettings": {
+        "sockopt": {
+          "domainStrategy": "ForceIPv6v4"
+		}
+	  }
+	},
+    {
+      "tag": "dns-out",
+      "protocol": "dns",
+      "settings": {
+        "userLevel": 12
+      }
+    },
+    {
+      "tag": "redirect-out-h11",
+      "protocol": "direct",
+      "settings": {
+        "redirect": "127.0.0.1:11666"
+      }
+    },
+    {
+      "tag": "redirect-out-h211",
+      "protocol": "direct",
+      "settings": {
+        "redirect": "127.0.0.1:11777"
+      }
+    },
+    {
+      "tag": "tcp-fragment-tls",
+      "protocol": "direct",
+      "streamSettings": {
+        "finalmask": {
+          "tcp": [
+            {"type": "merge", "settings": {"times": 100, "delayMs": 30, "maxBytes": 16384}},
+			{"type": "fragment", "settings": {"packets": "tlshello", "lengths": ["6", "32", "1"], "delays": ["0"], "maxSplit": "0"}},
+            {"type": "fragment", "settings": {"packets": "1-1", "lengths": ["48", "1"], "delays": ["1"], "maxSplit": "11"}}
+          ]
+        },
+        "sockopt": {
+          "tcpUserTimeout": 4000,
+          "domainStrategy": "ForceIP",
+          "happyEyeballs": {"tryDelayMs": 300, "prioritizeIPv6": true, "interleave": 4, "assuranceFirstInterleave": true, "maxConcurrentTry": 32}
+        }
+      }
+    },
+    {
+      "tag": "tcp-fragment-tls-cloudflare",
+      "protocol": "direct",
+      "settings": {
+        "redirect": "cloudflare.redirect:0"
+      },
+      "streamSettings": {
+        "finalmask": {
+          "tcp": [
+            {"type": "merge", "settings": {"times": 100, "delayMs": 30, "maxBytes": 16384}},
+			{"type": "fragment", "settings": {"packets": "tlshello", "lengths": ["6", "32", "1"], "delays": ["0"], "maxSplit": "0"}},
+            {"type": "fragment", "settings": {"packets": "1-1", "lengths": ["48", "1"], "delays": ["1"], "maxSplit": "11"}}
+          ]
+        },
+        "sockopt": {
+          "tcpUserTimeout": 4000,
+          "domainStrategy": "ForceIP",
+          "happyEyeballs": {"tryDelayMs": 300, "prioritizeIPv6": true, "interleave": 4, "assuranceFirstInterleave": true, "maxConcurrentTry": 32}
+        }
+      }
+    },
+    {
+      "tag": "tls-repack-dns",
+      "protocol": "direct",
+      "settings": {
+        "redirect": "dns.redirect:0"
+      },
+      "streamSettings": {
+        "security": "tls",
+        "tlsSettings": {
+          "serverName": "www.microsoft.com",
+          "verifyPeerCertByName": "fromMitM,www.microsoft.com,www.google.com,dns.google,cloudflare-dns.com,one.one.one.one",
+          "alpn": ["fromMitM"],
+          "tlsHandshakeTimeout": 12000,
+          "fingerprint": "unsafe",
+          "enableSessionResumption": true,
+          "cipherSuites": "TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384:TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384:TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256:TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256:TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_SHA256:TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305_SHA256:TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA:TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA:TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256:TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256"
+        },
+        "finalmask": {
+          "tcp": [
+            {"type": "merge", "settings": {"times": 100, "delayMs": 30, "maxBytes": 16384}},
+            {"type": "fragment", "settings": {"packets": "tlshello", "lengths": ["6", "99", "1"], "delays": ["0"], "maxSplit": "0"}},
+            {"type": "fragment", "settings": {"packets": "1-1", "lengths": ["115", "1"], "delays": ["1"], "maxSplit": "11"}}
+          ]
+        },
+		"sockopt": {
+          "tcpHandshakeTimeout": 12000,
+          "tcpUserTimeout": 4000,
+          "domainStrategy": "ForceIP",
+          "happyEyeballs": {"tryDelayMs": 300, "prioritizeIPv6": true, "interleave": 4, "assuranceFirstInterleave": true, "maxConcurrentTry": 32, "successDefinition": "tlshandshakecomplete"}
+        }
+      }
+    },
+    {
+      "tag": "tls-repack-fastly",
+      "protocol": "direct",
+      "settings": {
+        "close": {"timeoutMs": 30, "removeHeaderSpace": true},
+        "redirect": "fastly.redirect:0"
+      },
+      "streamSettings": {
+        "security": "tls",
+        "tlsSettings": {
+          "serverName": "www.python.org",
+          "verifyPeerCertByName": "fromMitM,www.python.org,pypi.org,pythonhosted.org,www.khanacademy.org,fastly.com,www.fastly.com,developer.fastly.com,www.reddit.com,github.githubassets.com,github.com,github.io,raw.githubusercontent.com",
+          "alpn": ["fromMitM"],
+          "fingerprint": "hellochrome_120",
+          "enableSessionResumption": true
+        },
+        "finalmask": {
+          "tcp": [
+            {"type": "merge", "settings": {"times": 100, "delayMs": 30, "maxBytes": 16384}}
+          ]
+        },
+		"sockopt": {
+          "tcpUserTimeout": 4000,
+          "domainStrategy": "ForceIP",
+          "happyEyeballs": {"tryDelayMs": 300, "prioritizeIPv6": true, "interleave": 4, "assuranceFirstInterleave": true, "maxConcurrentTry": 32, "successDefinition": "tlshandshakecomplete"}
+        }
+      }
+    },
+    {
+      "tag": "tls-repack-google",
+      "protocol": "direct",
+      "settings": {
+        "close": {"timeoutMs": 30, "removeHeaderSpace": true}
+      },
+      "streamSettings": {
+        "security": "tls",
+        "tlsSettings": {
+          "serverName": "www.google.com",
+          "verifyPeerCertByName": "fromMitM,www.google.com,dns.google,www.googlevideo.com,www.youtube.com",
+          "alpn": ["fromMitM"],
+          "fingerprint": "hellochrome_120",
+          "enableSessionResumption": true
+        },
+        "finalmask": {
+          "tcp": [
+            {"type": "merge", "settings": {"times": 100, "delayMs": 30, "maxBytes": 16384}}
+          ]
+        },
+		"sockopt": {
+          "tcpUserTimeout": 4000,
+          "domainStrategy": "ForceIP",
+          "happyEyeballs": {"tryDelayMs": 300, "prioritizeIPv6": true, "interleave": 4, "assuranceFirstInterleave": true, "maxConcurrentTry": 32, "successDefinition": "tlshandshakecomplete"}
+        }
+      }
+    },
+    {
+      "tag": "tls-repack-meta",
+      "protocol": "direct",
+      "settings": {
+        "close": {"timeoutMs": 30, "removeHeaderSpace": true}
+      },
+      "streamSettings": {
+        "security": "tls",
+        "tlsSettings": {
+          "serverName": "www.microsoft.com",
+          "verifyPeerCertByName": "fromMitM,www.google.com,www.microsoft.com,www.whatsapp.com,www.facebook.com,www.ar.meta.com,www.fb.com,www.whatsapp.net,www.atlassolutions.com,www.secure.facebook.com,www.extern.facebook.com,www.internet.org,www.oculus.com,www.wit.ai,www.facebook-dns.com,www.instagram.com,www.meta.com,www.external-disputes.meta.com,www.fbe2e.com,www.cloud.x2p.facebook.net,www.secure.latest.facebook.com,www.accounts.meta.com",
+          "alpn": ["fromMitM"],
+          "fingerprint": "hellochrome_120",
+          "enableSessionResumption": true
+        },
+        "finalmask": {
+          "tcp": [
+            {"type": "merge", "settings": {"times": 100, "delayMs": 30, "maxBytes": 16384}}
+          ]
+        },
+		"sockopt": {
+          "tcpUserTimeout": 4000,
+          "domainStrategy": "ForceIP",
+          "happyEyeballs": {"tryDelayMs": 300, "prioritizeIPv6": true, "interleave": 4, "assuranceFirstInterleave": true, "maxConcurrentTry": 32, "successDefinition": "tlshandshakecomplete"}
+        }
+      }
+    },
+    {
+      "tag": "tls-repack-frommitm-try",
+      "protocol": "direct",
+      "settings": {
+        "close": {"timeoutMs": 30, "removeHeaderSpace": true}
+      },
+      "streamSettings": {
+        "security": "tls",
+        "tlsSettings": {
+          "serverName": "fromMitM",
+          "verifyPeerCertByName": "fromMitM",
+          "alpn": ["fromMitM"],
+          "fingerprint": "hellochrome_120",
+          "enableSessionResumption": true
+        },
+        "finalmask": {
+          "tcp": [
+            {"type": "merge", "settings": {"times": 100, "delayMs": 30, "maxBytes": 16384}}
+          ]
+        },
+		"sockopt": {
+          "fallback": {"noResponseFallbackDialerProxy": "tcp-fragment-tls", "maxBufferSize": 16384, "waitMs": 2000, "passPrimaryConnAddress": true},
+          "tcpUserTimeout": 4000,
+          "domainStrategy": "ForceIP",
+          "happyEyeballs": {"tryDelayMs": 300, "prioritizeIPv6": true, "interleave": 4, "assuranceFirstInterleave": true, "maxConcurrentTry": 32, "successDefinition": "tlshandshakecomplete"}
+        }
+      }
+    },
+    {
+      "tag": "tls-repack-cloudflare",
+      "protocol": "direct",
+      "settings": {
+        "close": {"timeoutMs": 30, "removeHeaderSpace": true},
+        "redirect": "cloudflare.redirect:0"
+      },
+      "streamSettings": {
+        "security": "tls",
+        "tlsSettings": {
+          "serverName": "fromMitM",
+          "verifyPeerCertByName": "fromMitM",
+          "alpn": ["fromMitM"],
+          "fingerprint": "unsafe",
+          "enableSessionResumption": true,
+          "cipherSuites": "TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384:TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384:TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256:TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256:TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_SHA256:TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305_SHA256:TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA:TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA:TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256:TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256"
+        },
+        "finalmask": {
+          "tcp": [
+            {"type": "merge", "settings": {"times": 100, "delayMs": 30, "maxBytes": 16384}},
+            {"type": "fragment", "settings": {"packets": "tlshello", "lengths": ["6", "99", "1"], "delays": ["0"], "maxSplit": "0"}},
+            {"type": "fragment", "settings": {"packets": "1-1", "lengths": ["115", "1"], "delays": ["1"], "maxSplit": "11"}}
+          ]
+        },
+		"sockopt": {
+          "tcpUserTimeout": 4000,
+          "domainStrategy": "ForceIP",
+          "happyEyeballs": {"tryDelayMs": 300, "prioritizeIPv6": true, "interleave": 4, "assuranceFirstInterleave": true, "maxConcurrentTry": 32, "successDefinition": "tlshandshakecomplete"}
+        }
+      }
+    },
+    {
+      "tag": "tls-repack-x",
+      "protocol": "direct",
+      "settings": {
+        "close": {"timeoutMs": 30, "removeHeaderSpace": true},
+        "redirect": "x.redirect:0"
+      },
+      "streamSettings": {
+        "security": "tls",
+        "tlsSettings": {
+          "serverName": "fromMitM",
+          "verifyPeerCertByName": "fromMitM",
+          "alpn": ["fromMitM"],
+          "fingerprint": "unsafe",
+          "enableSessionResumption": true,
+          "cipherSuites": "TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384:TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384:TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256:TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256:TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_SHA256:TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305_SHA256:TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA:TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA:TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256:TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256"
+        },
+        "finalmask": {
+          "tcp": [
+            {"type": "merge", "settings": {"times": 100, "delayMs": 30, "maxBytes": 16384}},
+            {"type": "fragment", "settings": {"packets": "tlshello", "lengths": ["6", "99", "1"], "delays": ["0"], "maxSplit": "0"}},
+            {"type": "fragment", "settings": {"packets": "1-1", "lengths": ["115", "1"], "delays": ["1"], "maxSplit": "11"}}
+          ]
+        },
+		"sockopt": {
+          "tcpUserTimeout": 4000,
+          "domainStrategy": "ForceIP",
+          "happyEyeballs": {"tryDelayMs": 300, "prioritizeIPv6": true, "interleave": 4, "assuranceFirstInterleave": true, "maxConcurrentTry": 32, "successDefinition": "tlshandshakecomplete"}
+        }
+      }
+    },
+    {
+      "tag": "udp-noises",
+      "protocol": "direct",
+      "streamSettings": {
+		"sockopt": {
+          "domainStrategy": "ForceIPv6v4"
+		},
+        "finalmask": {
+          "udp": [
+            {
+              "type": "noise",
+              "settings": {
+                "reset": "28",
+                "noise": [
+                  {"rand": "1200-1230", "delay": "10"}, {"rand": "1200-1230", "delay": "10"}, {"rand": "1200-1230", "delay": "10"},
+                  {"rand": "1200-1230", "delay": "10"}, {"rand": "1200-1230", "delay": "10"}, {"rand": "1200-1230", "delay": "10"},
+                  {"rand": "1200-1230", "delay": "10"}, {"rand": "1200-1230", "delay": "10"}, {"rand": "1200-1230", "delay": "10"},
+                  {"rand": "1200-1230", "delay": "10"}, {"rand": "1200-1230", "delay": "10"}, {"rand": "1200-1230", "delay": "10"},
+                  {"rand": "1200-1230", "delay": "10"}, {"rand": "1200-1230", "delay": "10"}, {"rand": "1200-1230", "delay": "10"},
+                  {"rand": "1200-1230", "delay": "10"}, {"rand": "1200-1230", "delay": "10"}, {"rand": "1200-1230", "delay": "10"},
+                  {"rand": "1200-1230", "delay": "10"}, {"rand": "1200-1230", "delay": "10"}, {"rand": "1200-1230", "delay": "10"},
+                  {"rand": "1200-1230", "delay": "10"}, {"rand": "1200-1230", "delay": "10"}, {"rand": "1200-1230", "delay": "10"}
+                ]
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+
+  "routing": {
+    "domainStrategy": "IPOnDemand",
+    "rules": [
+      {
+        "outboundTag": "tcp-direct",
+        "inboundTag": ["domestic-dns"],
+        "network": "tcp"
+      },
+      {
+        "outboundTag": "udp-direct",
+        "inboundTag": ["domestic-dns"],
+        "network": "udp"
+      },
+      {
+        "outboundTag": "tls-repack-dns",
+        "inboundTag": ["no-filter-dns"]
+      },
+      {
+        "outboundTag": "dns-out",
+        "port": 53
+      },
+      {
+        "outboundTag": "block",
+        "domain": ["geosite:category-ads-all", "geosite:category-doh"]
+      },
+      {
+        "outboundTag": "block",
+        "port": 853
+      },
+      {
+	    "outboundTag": "tls-repack-google",
+        "domain": ["domain:googlevideo.com"],
+        "ip": ["0.0.0.0/0", "::/0"],
+        "inboundTag": ["tls-decrypt-h11"]
+	  },
+      {
+	    "outboundTag": "tls-repack-google",
+        "domain": ["geosite:google"],
+        "ip": ["0.0.0.0/0", "::/0"],
+        "inboundTag": ["tls-decrypt-h11"]
+	  },
+      {
+	    "outboundTag": "tls-repack-google",
+        "ip": ["geoip:google"],
+        "inboundTag": ["tls-decrypt-h11"]
+	  },
+	  {
+	    "outboundTag": "tls-repack-fastly",
+        "domain": ["geosite:reddit", "geosite:cnn", "domain:buzzfeed.com"],
+        "ip": ["geoip:fastly"],
+        "inboundTag": ["tls-decrypt-h11"]
+	  },
+      {
+	    "outboundTag": "tls-repack-meta",
+        "domain": ["geosite:meta"],
+        "ip": ["0.0.0.0/0", "::/0"],
+        "inboundTag": ["tls-decrypt-h11"]
+	  },
+      {
+	    "outboundTag": "tls-repack-meta",
+        "ip": ["geoip:facebook"],
+        "inboundTag": ["tls-decrypt-h11"]
+	  },
+      {
+	    "outboundTag": "tls-repack-x",
+        "ip": ["geoip:cloudflare"],
+        "domain": ["domain:x.com", "domain:t.co", "domain:twitter.com"],
+        "inboundTag": ["tls-decrypt-h11"]
+	  },
+      {
+	    "outboundTag": "tls-repack-cloudflare",
+        "ip": ["0.0.0.0/0", "::/0"],
+        "domain": ["domain:twimg.com"],
+        "inboundTag": ["tls-decrypt-h11"]
+	  },
+      {
+	    "outboundTag": "tls-repack-cloudflare",
+        "ip": ["geoip:cloudflare"],
+        "inboundTag": ["tls-decrypt-h11"]
+	  },
+      {
+	    "outboundTag": "tls-repack-frommitm-try",
+        "ip": ["0.0.0.0/0", "::/0"],
+        "inboundTag": ["tls-decrypt-h11"]
+	  },
+      {
+	    "outboundTag": "block",
+        "inboundTag": ["tls-decrypt-h11"]
+	  },
+      {
+        "outboundTag": "tcp-direct",
+        "network": "tcp", "domain": ["domain:ir", "geosite:private", "geosite:category-ir", "geosite:category-ai-cn", "geosite:category-ai-!cn", "geosite:category-ai-ru", "domain:cloudflare.com", "geosite:category-speedtest", "geosite:category-ip-geo-detect"]
+      },
+	  {
+        "outboundTag": "udp-direct",
+        "network": "udp", "domain": ["domain:ir", "geosite:private", "geosite:category-ir", "geosite:category-ai-cn", "geosite:category-ai-!cn", "geosite:category-ai-ru", "domain:cloudflare.com", "geosite:category-speedtest", "geosite:category-ip-geo-detect"]
+      },
+      {
+        "outboundTag": "block",
+        "ip": ["10.10.34.0/24", "2001:4188:2:600::/64"]
+      },
+      {
+        "outboundTag": "tcp-direct",
+        "network": "tcp", "ip": ["geoip:private", "geoip:ir"]
+      },
+	  {
+        "outboundTag": "udp-direct",
+        "network": "udp", "ip": ["geoip:private", "geoip:ir"]
+      },
+      {
+        "outboundTag": "block",
+        "network": "udp", "protocol": ["quic"], "ip": ["0.0.0.0/0", "::/0"]
+      },
+      {
+        "outboundTag": "block",
+        "network": "udp", "port": "443", "ip": ["0.0.0.0/0", "::/0"]
+      },
+      {
+        "outboundTag": "udp-direct",
+        "network": "udp", "ip": ["0.0.0.0/0", "::/0"]
+      },
+      {
+        "outboundTag": "tcp-fragment-tls-cloudflare",
+        "network": "tcp", "protocol": ["tls"], "domain": ["full:cloudflare-ech.com"], "ip": ["0.0.0.0/0", "::/0"]
+      },
+      {
+        "outboundTag": "tcp-fragment-tls-cloudflare",
+        "network": "tcp", "port": "443,2053,2083,2087,2096,8443", "domain": ["full:cloudflare-ech.com"], "ip": ["0.0.0.0/0", "::/0"]
+      },
+      {
+        "outboundTag": "redirect-out-h11",
+        "network": "tcp", "port": 443,
+        "domain": ["domain:googlevideo.com"],
+        "ip": ["0.0.0.0/0", "::/0"]
+      },
+      {
+        "outboundTag": "redirect-out-h11",
+        "network": "tcp", "port": 443,
+        "ip": ["0.0.0.0/0", "::/0"]
+      },
+      {
+        "outboundTag": "tcp-direct",
+        "network": "tcp", "ip": ["0.0.0.0/0", "::/0"]
+      },
+      {
+        "outboundTag": "block",
+        "port": "0-65535"
+      }
+    ]
+  }
+}

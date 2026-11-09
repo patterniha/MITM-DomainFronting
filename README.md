@@ -2,14 +2,9 @@
 
 <div dir="rtl">
 
-اول اینکه این متد قرار نیست کانفیگ شما را زنده کند و دسترسی کامل به اینترنت را فراهم کند بلکه باعث میشود برخی سرویسهای خاص به طور مستقیم (بدون نیاز به سرور و یا حتی ورکر) در دسترس قرار گیرند
+لینک Subscription:
 
-در حال حاضر (۱۴۰۵/۳/۱۰) اجرای این متد امکان دسترسی به یوتویوب، اینستاگرام، واتس‌آپ، فیسبوک، رددیت و بعضی سایتهای پشت فستلی را فراهم میکند. 
-
-به محض اینکه هر سرویس دیگری با این متد در دسترس باشد اپدیت لازم را انجام خواهم داد.
-
-این متد بر روی ویندوز، لینوکس، مک و اندروید (بدون نیاز به روت) قابل اجراست.
-
+https://raw.githubusercontent.com/patterniha/MITM-DomainFronting/refs/heads/main/Subscription/MITM-DomainFronting.json#Patterniha-M
 ///
 
 این پروژه را ابتدا من در
@@ -25,16 +20,16 @@
 ## راه اندازی در ویندوز
 
 ۱. ابتدا آخرین ورژن برنامه 
-v2rayN (v2rayN-windows-64.zip
+pattN (pattN-windows-64.zip
 )
 را از
-https://github.com/2dust/v2rayN/releases
+https://github.com/patterniha/PattN/releases
 دانلود و اکسترکت کنید
 
 ۲. حال نیاز به یک سرتیفیکیت شخصی دارید برای این کار فایل 
 certificate_generator.bat
 را به فولدر 
-v2rayN-windows-64\bin
+pattN-windows-64\bin
 منتقل و در همانجا اجرا کنید
 کمی صبر کنید سپس دو فایل 
 mycert.crt
@@ -58,22 +53,15 @@ Trusted Root Certification Authorities
 
 Settings -> Privacy and security -> Security -> Manage certificates -> Manage imported certificates from Windows -> Trusted Root Certification Authorities -> Import -> Select mycert.crt file -> Place all certificates in the following store -> Select "Trusted Root Certification Authorities"
 
-۴. نرم افزار v2rayN را اجرا کنید و از قسمت configuration بر روی 
-add a custom configuration
-کلیک کنید حال یک نام دلخواه انتخاب کنید و فایل کانفیگ 
-MITM-DomainFronting.json
-را وارد کنید 
-core type 
-را بر روی xray و socks port را حتما خالی بزارید
 
-۵. کانفیگ را انتخاب کرده و set system proxy را انتخاب کنید 
+۴. ساب را وارد برنامه pattN کرده و به یکی از کانفیگ‌های آن (بسته به اپراتور و شرایط فیلترینگ) وصل شوید  و set system proxy را انتخاب کنید 
  کار تمام است اکنون میتوانید بر روی مرورگری که سرتیفیکیت را در آن وارد کردید (و یا کل سیستم در صورتی که سرتیفیکیت را به سیستم عامل معرفی کردید)
 از این متد استفاده کنید.
 
 ## راه اندازی در اندروید
 
-۱. ابتدا آخرین ورژن برنامه v2rayNG را از 
-https://github.com/2dust/v2rayNG/releases
+۱. ابتدا آخرین ورژن برنامه pattNG را از 
+https://github.com/patterniha/PattNG/releases
 دانلود و نصب کنید
 
 ۲. حال نیاز به یک سرتیفیکیت شخصی دارید برای اینکار میتوانید همان فایلهای 
@@ -88,7 +76,7 @@ https://regery.com/en/security/ssl-tools/self-signed-certificate-generator
 
 **هشدار: حتما از سرتیفیکیت شخصی خود استفاده کنید و به هیچ عنوان از سرتیفیکیت (crt) دیگران استفاده نکنید و همچنین فایل پرایویت‌کی (key) خود را به هیچ شخصی ندهید**
 
-۳. در برنامه v2rayNG و در قسمت Asset files هر دو فایل
+۳. در برنامه pattNG و در قسمت Asset files هر دو فایل
 mycert.crt, mycert.key
 را وارد کنید
 
@@ -102,20 +90,14 @@ Setting -> Security and privacy -> More security settings -> View security certi
 
 مشاهده کنید، دقت کنید که این مراحل ممکن است بر روی گوشی های مختلف کمی متفاوت باشد
 
-۵. کانفیگ 
-MITM-DomainFronting.json 
-را از طریق
-import from locally
-وارد برنامهv2rayNG کنید و اجرا کنید
-همچنین دقت کنید که Enable Hev TUN FEATURE در تنظیمات v2rayNG فعال باشد و همچنین پورت پیشفرض 10808 را تغییر نداده باشید.
 
-۶. کار تمام است اکنون میتوانید بر روی مرورگر کروم (و به طور کلی تمامی مرورگرهای مبتنی بر کرومیوم) از این متد استفاده کنید
+۵. ساب را وارد pattNG کرده و به یکی از کانفیگ‌های آن (بسته به اپراتور و شرایط فیلترینگ) وصل شوید. کار تمام است اکنون میتوانید بر روی مرورگر کروم (و به طور کلی تمامی مرورگرهای مبتنی بر کرومیوم) از این متد استفاده کنید
 
 و در صورتی که از مرورگر فایرفاکس استفاده میکنید باید مراحل اضافه زیر را طی کنید
 
 firefox browser -> Settings -> About Firefox -> Tap the Firefox logo five times -> Navigate to Settings -> Secret Settings -> Toggle "Use third party CA certificates"
 
-دقت کنید برای اندروید غیر روت فقط از طریق مرورگرها میتوانید ازین متد استفاده کنید و برنامه های مستقل امکان استفاده از این متد را معمولا ندارند.
+دقت کنید در اندروید فقط از طریق مرورگرها میتوانید ازین متد استفاده کنید و برنامه های مستقل امکان استفاده از این متد را معمولا ندارند.
 
 
 # هشدار ها و نکات
@@ -123,9 +105,8 @@ firefox browser -> Settings -> About Firefox -> Tap the Firefox logo five times 
 ۱. **باز هم تاکید میکنم فایل سرتیفیکیت (crt) را از کسی نگیرید و فایل پرایویت‌کی (key) را به هیچ شخصی ندهید به طور ساده این دو فایل را نه به کسی بدهید و نه از کسی بگیرید و خودتان به صورت شخصی ایجاد و از آن استفاده کنید**
 
 
-۲. برای اندروید غیر روت ازین متد فقط میتوانید بر روی مرورگرها استفاده کنید و اپ های مستقل معمولا از این متد پشتیبانی نمیکنند
+۲. در اندروید ازین متد فقط میتوانید بر روی مرورگرها استفاده کنید و اپ های مستقل معمولا از این متد پشتیبانی نمیکنند
 
- بنابراین برای استفاده از google meet و یا google drive و ... باید از مرورگر استفاده کنید.
  
 ۳. زحمت زیادی برای برای این برنامه کشیده شده از نوشتن کد پایتون اولیه تا اضافه کردن آن به هسته xray امیدوارم حمایت از بنده فراموش نشه همچنان کارهای بزرگی در پیش هست ...
 
@@ -134,5 +115,7 @@ firefox browser -> Settings -> About Firefox -> Tap the Firefox logo five times 
 USDT (BEP20): 0x76a768B53Ca77B43086946315f0BDF21156bF424
 
 USDT (TRC20): TU5gKvKqcXPn8itp1DouBCwcqGHMemBm8o
+
+TON (TON): UQAc-mZB3y7uxWHKiMmq0ORZEYgycWDWZ4V1k73HsXvTJx-i
 
 @patterniha
